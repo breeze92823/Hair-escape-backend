@@ -11,6 +11,8 @@ export const WORLD_BOUNDS = { minX: -200, maxX: 200, minZ: -1510, maxZ: 200, min
 // Longest accepted strings.
 export const NAME_MAX = 64;
 export const POSE_MAX = 32;
+// Highest hair cable state code (client net.js CABLE_CODE: 0 idle, 1 flying, 2 riding, 3 reeling in).
+export const CABLE_STATES = 3;
 // Bloxity avatar JSON, relayed as-is. Kept under the 4 KB cap of the join request's options.
 export const AVATAR_MAX_LEN = 3000;
 

@@ -2,6 +2,7 @@ import { Room, Client, CloseCode } from "colyseus";
 import { WorldState, PlayerState } from "./schema/WorldState.js";
 import {
   AVATAR_MAX_LEN,
+  CABLE_STATES,
   GUEST_ID_PREFIX,
   HAIR_SHOWN_MAX,
   LEADERBOARD_QUERY_LIMIT,
@@ -90,6 +91,13 @@ export class WorldRoom extends Room<{ state: WorldState }> {
       if (typeof msg?.grounded === "boolean") p.grounded = msg.grounded;
       if (msg?.pose === null) p.pose = "";
       else if (typeof msg?.pose === "string" && msg.pose.length <= POSE_MAX) p.pose = msg.pose;
+      // Hair cable state and far end; the end is only read while the cable is out.
+      if (Number.isInteger(msg?.cable) && msg.cable >= 0 && msg.cable <= CABLE_STATES) p.cable = msg.cable;
+      if (p.cable && finite(msg?.tx) && finite(msg?.ty) && finite(msg?.tz)) {
+        p.tx = clamp(msg.tx, b.minX, b.maxX);
+        p.ty = clamp(msg.ty, b.minY, b.maxY);
+        p.tz = clamp(msg.tz, b.minZ, b.maxZ);
+      }
     },
     // Bloxity avatar JSON; sent on connect and whenever the portal reports a change.
     setAvatar: (client: Client, msg: { avatar?: string }) => {

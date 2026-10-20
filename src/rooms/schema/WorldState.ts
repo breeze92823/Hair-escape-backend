@@ -15,6 +15,13 @@ export const PlayerState = schema(
     speed01: t.float64().default(0), // 0..1 gait factor -- purely cosmetic
     grounded: t.boolean().default(true),
     pose: t.string().default(""), // client animation name ("" = none)
+    // The hair cable (client hairCable.js): 0 idle, 1 flying, 2 riding, 3 reeling in, and the far
+    // end of the visible rope (the flying tip, the anchor or the end still reeling in) while it is
+    // out. float32: centimetre precision is plenty for a cosmetic.
+    cable: t.uint8().default(0),
+    tx: t.float32().default(0),
+    ty: t.float32().default(0),
+    tz: t.float32().default(0),
     // The player's Bloxity avatar { equipped, proportions } as an opaque JSON string,
     // stored and relayed as-is (length-capped, never parsed here).
     avatar: t.string().default(""),

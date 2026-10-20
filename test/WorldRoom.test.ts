@@ -106,6 +106,30 @@ describe("WorldRoom", () => {
     assert.strictEqual(s2.pose, "");
   });
 
+  it("relays the hair cable and sanitises it", async () => {
+    const room = await colyseus.createRoom<WorldState>("world", {});
+    const c1 = await colyseus.connectTo(room);
+    const c2 = await colyseus.connectTo(room);
+    await room.waitForNextPatch();
+
+    c1.send("pose", { x: 0, y: 0, z: 0, cable: 1, tx: 3.25, ty: 4.5, tz: -12 });
+    await until(() => c2.state.players.get(c1.sessionId)!.cable === 1);
+    const s = c2.state.players.get(c1.sessionId)!;
+    assert.strictEqual(s.tx, 3.25);
+    assert.strictEqual(s.ty, 4.5);
+    assert.strictEqual(s.tz, -12);
+
+    // Unknown states are ignored, the far end is clamped to the world, idle keeps the last end.
+    c1.send("pose", { cable: 9, tx: 0, ty: 0, tz: -99999 });
+    await until(() => c2.state.players.get(c1.sessionId)!.tz === WORLD_BOUNDS.minZ);
+    assert.strictEqual(c2.state.players.get(c1.sessionId)!.tz, WORLD_BOUNDS.minZ);
+    assert.strictEqual(c2.state.players.get(c1.sessionId)!.cable, 1);
+    c1.send("pose", { cable: 0, tx: 7, ty: 7, tz: 7 });
+    await until(() => c2.state.players.get(c1.sessionId)!.cable === 0);
+    assert.strictEqual(c2.state.players.get(c1.sessionId)!.cable, 0);
+    assert.strictEqual(c2.state.players.get(c1.sessionId)!.tx, 0);
+  });
+
   it("relays the hair look, rejecting unknown ids", async () => {
     const room = await colyseus.createRoom<WorldState>("world", {});
     const c1 = await colyseus.connectTo(room);
