@@ -1,6 +1,7 @@
 import assert from "assert";
 
-import { sanitizeProgress } from "../src/sanitize.js";
+import { TUTORIAL_DONE } from "../src/constants.js";
+import { resolveTutorialStep, sanitizeProgress } from "../src/sanitize.js";
 
 describe("sanitizeProgress", () => {
   it("rejects non-objects and bounds numbers", () => {
@@ -50,5 +51,20 @@ describe("sanitizeProgress", () => {
     const out = sanitizeProgress({ boostUntil: Date.now() * 2, giftAt: Date.now() * 2 })!;
     assert.ok(out.boostUntil! <= Date.now() + 24 * 3600e3);
     assert.ok(out.giftAt! <= Date.now() + 11 * 60e3);
+  });
+
+  it("bounds the tutorial step", () => {
+    assert.strictEqual(sanitizeProgress({ tutorial: 3.6 })!.tutorial, 3);
+    assert.strictEqual(sanitizeProgress({ tutorial: 99 })!.tutorial, TUTORIAL_DONE);
+    assert.strictEqual(sanitizeProgress({ tutorial: -2 })!.tutorial, 0);
+    assert.strictEqual(sanitizeProgress({ tutorial: "4" })!.tutorial, undefined);
+  });
+});
+
+describe("resolveTutorialStep", () => {
+  it("reads a save from before the tutorial as finished", () => {
+    assert.strictEqual(resolveTutorialStep({}), TUTORIAL_DONE);
+    assert.strictEqual(resolveTutorialStep({ tutorial: 0 }), 0);
+    assert.strictEqual(resolveTutorialStep({ tutorial: 1e9 }), TUTORIAL_DONE);
   });
 });
