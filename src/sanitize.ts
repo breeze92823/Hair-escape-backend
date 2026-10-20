@@ -1,5 +1,5 @@
 import {
-  CURRENCY_MAX, REBIRTH_MAX, LEVEL_MAX, DAYS_MAX, OWNED_MAX, TEXT_MAX, QUEST_MAX, PRESTIGE_MAX, UPGRADE_LEVEL_MAX, TUTORIAL_DONE,
+  CURRENCY_MAX, REBIRTH_MAX, LEVEL_MAX, DAYS_MAX, OWNED_MAX, TEXT_MAX, QUEST_MAX, PRESTIGE_MAX, UPGRADE_LEVEL_MAX, TUTORIAL_DONE, STAGE_MAX,
   ID_PATTERN, MAP_KEYS_MAX, BOOST_MAX_AHEAD_MS, CLOCK_SLACK_MS,
 } from "./constants.js";
 import type { PlayerDoc } from "./db.js";
@@ -71,6 +71,7 @@ export function sanitizeProgress(raw: unknown): Partial<PlayerDoc> | null {
   if (raw.chests !== undefined) out.chests = sanitizeMap(raw.chests, (v) => (finite(v) ? clampInt(v, now + CLOCK_SLACK_MS) : undefined));
   if (raw.upgrades !== undefined) out.upgrades = sanitizeMap(raw.upgrades, (v) => (finite(v) ? clampInt(v, UPGRADE_LEVEL_MAX) : undefined));
   if (finite(raw.quest)) out.quest = clampInt(raw.quest, QUEST_MAX);
+  if (finite(raw.stageReached)) out.stageReached = clampInt(raw.stageReached, STAGE_MAX);
   if (finite(raw.tutorial)) out.tutorial = clampInt(raw.tutorial, TUTORIAL_DONE);
   if (raw.flags !== undefined) out.flags = sanitizeMap(raw.flags, (v) => (typeof v === "boolean" ? v : undefined));
   if (isId(raw.cut)) out.cut = raw.cut;

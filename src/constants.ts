@@ -39,6 +39,8 @@ export const TEXT_MAX = 32; // lastDay, ids
 export const QUEST_MAX = 1000;
 export const PRESTIGE_MAX = 1000;
 export const UPGRADE_LEVEL_MAX = 100;
+// Furthest teleport stage index reached (client state.js stageReached; 14 stages today, slack for new zones).
+export const STAGE_MAX = 100;
 // Client src/config.js TUTORIAL.done: the new-player tutorial runs steps 0..TUTORIAL_DONE (7 = finished).
 export const TUTORIAL_DONE = 7;
 

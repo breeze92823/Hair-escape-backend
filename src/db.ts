@@ -27,6 +27,7 @@ export interface PlayerDoc {
   quest?: number;
   tutorial?: number; // new-player tutorial step; a doc without it predates the tutorial (reads as finished)
   bestHair?: number; // peak hair, ranked by TOP HAIR
+  stageReached?: number; // furthest teleport stage index reached
   giftAt?: number;
   boostUntil?: number;
   flags?: Record<string, boolean>;
