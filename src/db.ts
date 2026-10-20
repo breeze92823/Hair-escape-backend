@@ -25,6 +25,7 @@ export interface PlayerDoc {
   upgrades?: Record<string, number>; // upgrade id -> level
   lastSeen?: number; // epoch ms, for offline earnings
   quest?: number;
+  tutorial?: number; // new-player tutorial step; a doc without it predates the tutorial (reads as finished)
   bestHair?: number; // peak hair, ranked by TOP HAIR
   giftAt?: number;
   boostUntil?: number;
